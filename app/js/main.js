@@ -35,7 +35,7 @@ function tekenKop(c) {
   const naam = opslag.get().profiel.naam;
   document.title = APP.naam;
   document.querySelector("#kop").innerHTML = `
-    <a href="#/" class="logo"><img src="icoon.svg" alt="">${esc(APP.naam)}</a>
+    <a href="#/" class="logo"><img src="logo.png" alt="">${esc(APP.naam)}</a>
     <span class="kop-rechts">
     <a href="#/badges" class="level" title="${level.volgend ? `Nog ${level.volgend.vanaf - punten} punten tot ${level.volgend.naam}` : "Hoogste level!"}">
       <span class="level-icoon">${level.icoon}</span>
