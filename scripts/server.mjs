@@ -19,4 +19,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404); res.end("Niet gevonden");
   }
-}).listen(PORT, () => console.log(`Vogeldex draait op http://localhost:${PORT}`));
+}).listen(PORT, () => console.log(`Dodo Diary draait op http://localhost:${PORT}`));

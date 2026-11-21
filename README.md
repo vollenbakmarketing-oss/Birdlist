@@ -1,9 +1,12 @@
-# Vogeldex 🐦
+# Dodo Diary 🦤
 
-Een vogel-spot-app voor kinderen van 8 tot 14 jaar, geïnspireerd op de Pokédex.
-Zie je een vogel? **Vang** hem in de app. De app onthoudt de soort, de datum en de plaats
-(je *lifelist*), en je krijgt een digitaal **vogelkaartje** met naam, groep, zeldzaamheid,
-grootte, spanwijdte, trekgedrag, een leuk weetje en het geluid.
+Een vogellogboek voor kinderen van 8 tot 14 jaar. Op een leuke, laagdrempelige manier houd je
+je waarnemingen en je *lifelist* bij. Zie je een vogel? Tik op **SPOT**, zoek hem op en tik
+**Dit was hem!** De app onthoudt de soort, de datum, de plaats en je notitie. Al je
+waarnemingen verschijnen op een **kaart**, verbonden door je route, zoals in een reisverslag.
+
+Elke soort heeft een digitaal **vogelkaartje** met de 3 belangrijkste kenmerken om hem te
+herkennen, plus groep, zeldzaamheid, grootte, spanwijdte, trekgedrag, een leuk weetje en het geluid.
 
 Dit is een **proof of concept** (POC): 68 Belgische soorten, alles in het Nederlands.
 
@@ -25,13 +28,17 @@ werkt hij ook offline, bijvoorbeeld in het bos.
 
 ## Wat zit erin?
 
-- **Vogeldex**: alle soorten met een nummer. Vogels die je nog niet ving, zie je als silhouet met `???`.
-- **Vangen**: zoek op naam, of filter op leefgebied en grootte als je de naam niet weet.
-  De datum en de plaats (via gps) worden automatisch ingevuld.
+- **Vogels**: alle soorten met een nummer. Vogels die je nog niet spotte, zie je als silhouet met `???`.
+- **SPOT**: zoek op naam, of filter op leefgebied en grootte als je de naam niet weet.
+  De datum en de plaats (via gps) worden automatisch ingevuld. Op een kaartje duid je de
+  plek aan of verbeter je ze, en je kan meteen een notitie schrijven.
+- **Kaart**: al je waarnemingen met de sticker van de vogel, verbonden door een stippellijn
+  in de volgorde waarin je ze zag. Onderaan staat een tijdlijn: tik erop om naar die plek te vliegen.
+- **Logboek**: een dagboek met al je waarnemingen per dag, met je notities. Tik op ✏️ om
+  datum, plaats, plek op de kaart of notitie achteraf aan te passen. Er is ook een lifelist.
 - **Vogelkaartje** met een kleur en sterren per zeldzaamheid. Legendarische vogels krijgen een gouden rand.
 - **Punten en levels**: van 🥚 Eitje tot 🦅 Arendsoog. Zeldzamere vogels leveren meer punten op.
 - **16 badges**, zoals Roofvogelradar, Vroege vogel en Schattenjager.
-- **Lifelist** met statistieken.
 - **Back-up**: de gegevens staan alleen op het toestel, dus je kan een back-up downloaden en terugzetten.
 - **eBird** (optioneel): met een API-sleutel zie je per vogel waar hij de laatste 30 dagen in de buurt gezien is.
 
@@ -41,8 +48,8 @@ Alles wat je vaak wil aanpassen, staat in een paar bestanden:
 
 | Wat wil je aanpassen?                                        | Bestand                    |
 |--------------------------------------------------------------|----------------------------|
-| Vogels: namen, weetjes, zeldzaamheid, groep, maten, geluid   | `app/data/vogels.json`     |
-| Punten per zeldzaamheid, kleuren, levels, groepen, trekgedrag | `app/js/config.js`         |
+| Vogels: namen, kenmerken, weetjes, zeldzaamheid, maten, geluid | `app/data/vogels.json`   |
+| Appnaam, kaart, punten, kleuren, levels, groepen, trekgedrag | `app/js/config.js`         |
 | Badges (en hun voorwaarden)                                  | `app/js/badges.js`         |
 | Kleuren, lettertypes, look & feel                            | `app/css/stijl.css` (variabelen bovenaan) |
 | "Zo lang als een potlood"-vergelijkingen                     | `app/js/ui.js`             |
@@ -55,13 +62,14 @@ Als de app al op gsm's geïnstalleerd is: verhoog `VERSIE` in `app/sw.js`.
 
 ```json
 {
-  "nr": 35,                          // nummer in de Vogeldex
+  "nr": 35,                          // nummer in het overzicht
   "id": "Alcedo_atthis",             // = naam van de sticker, niet wijzigen
   "naam": "IJsvogel",
   "wetenschappelijk": "Alcedo atthis",
   "groep": "water",                  // tuin | bos | water | akker | roofvogel | uil
   "zeldzaamheid": "zeldzaam",        // gewoon | vrij gewoon | zeldzaam | heel zeldzaam | legendarisch
   "weetje": "Duikt pijlsnel …",
+  "kenmerken": ["Knalblauwe rug", "Oranje buik", "Lange, puntige snavel"],  // precies 3
   "lengteCm": [16, 17],
   "spanwijdteCm": [24, 26],
   "trek": "standvogel",              // standvogel | zomergast | wintergast | doortrekker | deels
@@ -80,7 +88,7 @@ npm run vogel -- "Certhia brachydactyla" "Turdus pilaris"
 
 Dit haalt de Nederlandse naam, de eBird-code, de IUCN-status en de sticker op uit de
 [huashu-bird-sticker](https://github.com/alchaincyf/huashu-bird-sticker)-dataset. Vul daarna in
-`vogels.json` de velden met `TODO` aan: groep, zeldzaamheid, weetje en eventueel de maten.
+`vogels.json` de velden met `TODO` aan: groep, zeldzaamheid, weetje, de 3 kenmerken en eventueel de maten.
 
 ### Zeldzaamheid laten berekenen met eBird
 
@@ -119,7 +127,9 @@ app/                    de website (statisch)
     main.js             router + kop
     opslag.js           lokale opslag (localStorage)
     spel.js             punten, levels, badges berekenen
-    kaart.js            het vogelkaartje
+    kaartje.js          het vogelkaartje
+    kaartlaag.js        hulpjes voor de kaarten (Leaflet)
+    waarneming-dialoog.js  venster om een waarneming toe te voegen of te bewerken
     locatie.js          gps + plaatsnaam (OpenStreetMap)
     ebird.js            eBird API
     ui.js               hulpfuncties
@@ -129,7 +139,8 @@ scripts/                beheerscripts (Node, geen afhankelijkheden)
 tests/                  npm test
 ```
 
-Er is geen framework en geen build-stap: gewone JavaScript-modules. Wil je later naar
+Er is geen framework en geen build-stap: gewone JavaScript-modules. De enige externe
+bibliotheek is [Leaflet](https://leafletjs.com) voor de kaarten (geladen via unpkg). Wil je later naar
 accounts en cloudopslag? Dan vervang je alleen `app/js/opslag.js`.
 
 ## Privacy
@@ -142,11 +153,11 @@ accounts en cloudopslag? Dan vervang je alleen `app/js/opslag.js`.
 
 ## Ideeën voor de volgende stap
 
-- Kaart met je eigen waarnemingen (Leaflet + OpenStreetMap)
+- Foto toevoegen bij een waarneming
+- Uitstapjes: waarnemingen groeperen per wandeling of reis, met een eigen kaart
 - Alle ~450 Belgische soorten, met zeldzaamheid per seizoen via eBird
 - Geluiden en een quiz ("Welke vogel hoor je?")
 - Klas- en gezinsmodus: lijsten delen en vergelijken (vraagt accounts en ouderlijke toestemming, GDPR)
-- Foto toevoegen bij een waarneming
 
 ## Bronnen en licenties
 
@@ -155,6 +166,7 @@ accounts en cloudopslag? Dan vervang je alleen `app/js/opslag.js`.
   verkleind naar 480 px. De naamsvermelding staat op elk kaartje en in de app onder *Meer*.
 - **Soortdata** (Nederlandse namen, eBird-codes, IUCN): dezelfde dataset (MIT), gebaseerd op AviList v2026 en IOC.
 - **Waarnemingen**: [eBird](https://ebird.org), Cornell Lab of Ornithology.
+- **Kaarten**: [OpenStreetMap](https://www.openstreetmap.org/copyright) en [Leaflet](https://leafletjs.com).
 - **Geluiden**: [xeno-canto](https://xeno-canto.org), Creative Commons volgens de opname.
 - **Weetjes, maten en trekgedrag**: zelf samengesteld voor deze POC. Laat ze nakijken door
   iemand van Natuurpunt of een vogelwerkgroep voor je ze publiceert.

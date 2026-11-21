@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Vogeldex</title>
-  <meta name="description" content="Spot vogels, vang ze in je Vogeldex en verzamel kaartjes, punten en badges.">
+  <title>Dodo Diary</title>
+  <meta name="description" content="Dodo Diary: jouw vogellogboek. Spot vogels, houd je lifelist bij en zie je waarnemingen op de kaart.">
   <meta name="theme-color" content="#1f5f3f">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icoon.svg" type="image/svg+xml">
@@ -12,17 +12,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <link rel="stylesheet" href="css/stijl.css">
 </head>
 <body>
   <header id="kop" class="kop"></header>
   <main id="scherm" class="scherm"><p class="leeg">Vogels laden…</p></main>
   <nav class="onderbalk" aria-label="Hoofdmenu">
-    <a href="#/"><span>📖</span>Vogeldex</a>
-    <a href="#/lijst"><span>📋</span>Lijst</a>
-    <a href="#/vangen" class="vang-knop"><span>＋</span>Vang</a>
+    <a href="#/"><span>📖</span>Vogels</a>
+    <a href="#/kaart"><span>🗺️</span>Kaart</a>
+    <a href="#/spot" class="spot-knop" aria-label="Spot een vogel"><span>SPOT</span></a>
+    <a href="#/logboek"><span>📓</span>Logboek</a>
     <a href="#/badges"><span>🏅</span>Badges</a>
-    <a href="#/meer"><span>⚙️</span>Meer</a>
   </nav>
   <script type="module" src="js/main.js"></script>
 </body>

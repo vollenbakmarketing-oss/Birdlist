@@ -16,8 +16,8 @@ export function xenoCantoPagina(vogel) {
 
 /**
  * @param vogel     object uit vogels.json
- * @param eerste    eerste waarneming (of null als nog niet gevangen)
- * @param verborgen true = silhouet tonen (nog niet gevangen)
+ * @param eerste    eerste waarneming (of null als nog niet gespot)
+ * @param verborgen true = silhouet tonen (nog niet gespot)
  * @param compact   true = zonder details (voor het feestscherm)
  */
 export function kaartHtml(vogel, { eerste = null, verborgen = false, compact = false } = {}) {
@@ -42,6 +42,12 @@ export function kaartHtml(vogel, { eerste = null, verborgen = false, compact = f
 
     <p class="kaart-latijn">${verborgen ? "&nbsp;" : `<i>${esc(vogel.wetenschappelijk)}</i>`}</p>
 
+    ${vogel.kenmerken?.length ? `
+    <div class="kaart-kenmerken">
+      <strong>🔎 Zo herken je hem</strong>
+      <ol>${vogel.kenmerken.map(k => `<li>${esc(k)}</li>`).join("")}</ol>
+    </div>` : ""}
+
     <dl class="kaart-stats">
       <div><dt>Zeldzaamheid</dt><dd><span class="zz-label">${esc(zz.label)}</span></dd></div>
       <div><dt>Grootte</dt><dd>${bereik(vogel.lengteCm)}<small>zo lang als ${vergelijkLengte(vogel.lengteCm[1])}</small></dd></div>
@@ -51,7 +57,7 @@ export function kaartHtml(vogel, { eerste = null, verborgen = false, compact = f
     </dl>
 
     ${verborgen ? `
-      <div class="kaart-weetje slot"><strong>🔒 Wist je dat?</strong><p>Vang deze vogel om zijn geheim te ontdekken.</p></div>
+      <div class="kaart-weetje slot"><strong>🔒 Wist je dat?</strong><p>Spot deze vogel om zijn geheim te ontdekken.</p></div>
     ` : `
       <div class="kaart-weetje"><strong>💡 Wist je dat?</strong><p>${esc(vogel.weetje)}</p></div>
       <div class="kaart-geluid">
@@ -62,7 +68,7 @@ export function kaartHtml(vogel, { eerste = null, verborgen = false, compact = f
       </div>
     `}
 
-    ${eerste ? `<footer class="kaart-voet">Gevangen op ${datumTekst(eerste.datum)}${eerste.plaats ? ` in ${esc(eerste.plaats)}` : ""}</footer>` : ""}
+    ${eerste ? `<footer class="kaart-voet">Voor het eerst gespot op ${datumTekst(eerste.datum)}${eerste.plaats ? ` in ${esc(eerste.plaats)}` : ""}</footer>` : ""}
     <p class="kaart-credit"><a href="${CREDITS.stickers.url}" target="_blank" rel="noopener">Illustratie: huashu-bird-sticker, CC BY 4.0</a></p>
   </article>`;
 }

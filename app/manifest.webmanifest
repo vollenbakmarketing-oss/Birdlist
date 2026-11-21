@@ -1,7 +1,7 @@
 {
-  "name": "Vogeldex",
-  "short_name": "Vogeldex",
-  "description": "Spot vogels en verzamel ze in je eigen Vogeldex.",
+  "name": "Dodo Diary",
+  "short_name": "Dodo Diary",
+  "description": "Jouw vogellogboek: spot vogels, houd je lifelist bij en zie je waarnemingen op de kaart.",
   "lang": "nl",
   "start_url": "./",
   "scope": "./",
