@@ -6,7 +6,7 @@ export function meerScherm(root, ctx) {
   const { opslag } = ctx;
   const s = opslag.get();
   root.innerHTML = `
-    <h1 class="titel">Meer</h1>
+    <h1 class="titel">Instellingen</h1>
 
     <section class="blok formulier">
       <h3>Mijn profiel</h3>
@@ -50,7 +50,7 @@ export function meerScherm(root, ctx) {
   root.querySelector("#ebird").addEventListener("change", e => { opslag.zetInstellingen({ ebirdSleutel: e.target.value.trim() }); toast("eBird-sleutel bewaard"); });
   root.querySelector("#export").addEventListener("click", () => {
     const blob = new Blob([opslag.exporteer()], { type: "application/json" });
-    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `vogeldex-backup-${new Date().toISOString().slice(0, 10)}.json` });
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `dodo-diary-backup-${new Date().toISOString().slice(0, 10)}.json` });
     a.click();
     URL.revokeObjectURL(a.href);
   });

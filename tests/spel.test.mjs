@@ -16,6 +16,7 @@ test("vogels.json is geldig", () => {
     assert.ok(v.trek in TREK, `${v.naam}: onbekend trekgedrag ${v.trek}`);
     assert.ok(v.weetje && v.weetje !== "TODO", `${v.naam}: weetje ontbreekt`);
     assert.equal(v.lengteCm.length, 2); assert.equal(v.spanwijdteCm.length, 2);
+    assert.ok(Array.isArray(v.kenmerken) && v.kenmerken.length === 3, `${v.naam}: geef precies 3 kenmerken`);
   }
 });
 
@@ -28,7 +29,7 @@ test("punten, level en badges", () => {
     { vogelId: ijsvogel.id, datum: "2026-05-03T10:00:00.000Z", plaats: "Brugge" },
   ];
   const s = berekenStatus(vogels, w);
-  assert.equal(s.gevangen.length, 2);
+  assert.equal(s.gespot.length, 2);
   assert.equal(s.punten, 10 + 2 + 50);
   assert.equal(s.level.naam, "Kuiken");
   assert.ok(s.badges.find(b => b.id === "eerste").behaald);

@@ -1,8 +1,8 @@
 {
-  "name": "vogeldex",
+  "name": "dodo-diary",
   "version": "0.1.0",
   "private": true,
-  "description": "Vogeldex: een vogel-spot-app voor kinderen (8-14 jaar). POC.",
+  "description": "Dodo Diary: een vogellogboek voor kinderen (8-14 jaar). POC.",
   "type": "module",
   "scripts": {
     "start": "node scripts/server.mjs",

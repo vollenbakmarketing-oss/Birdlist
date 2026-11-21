@@ -8,18 +8,18 @@ export function berekenStatus(vogels, waarnemingen) {
     if (!perVogel.has(w.vogelId)) perVogel.set(w.vogelId, []);
     perVogel.get(w.vogelId).push(w);
   }
-  const gevangen = vogels.filter(v => perVogel.has(v.id));
+  const gespot = vogels.filter(v => perVogel.has(v.id));
 
   let punten = 0;
-  for (const v of gevangen) {
+  for (const v of gespot) {
     punten += ZELDZAAMHEID[v.zeldzaamheid]?.punten ?? 0;
     punten += (perVogel.get(v.id).length - 1) * PUNTEN_HERHAALDE_WAARNEMING;
   }
 
-  const s = { gevangen, waarnemingen, aantal: f => gevangen.filter(f).length };
+  const s = { gespot, waarnemingen, aantal: f => gespot.filter(f).length };
   const badges = BADGES.map(b => ({ ...b, behaald: safe(() => b.voorwaarde(s)) }));
 
-  return { perVogel, gevangen, punten, level: levelVoor(punten), badges };
+  return { perVogel, gespot, punten, level: levelVoor(punten), badges };
 }
 
 function safe(f) { try { return !!f(); } catch { return false; } }

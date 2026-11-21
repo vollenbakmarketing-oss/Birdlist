@@ -1,5 +1,5 @@
 /* =====================================================================
-   VOGELDEX — stijl
+   DODO DIARY — stijl
    Kleuren en lettertypes staan bovenaan als variabelen: pas die aan
    om de hele app een andere look te geven.
    Kleuren per zeldzaamheid staan in js/config.js.
@@ -44,7 +44,11 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
   padding: 10px 16px; background: var(--groen); color: #fff; box-shadow: var(--schaduw);
 }
 @media (prefers-color-scheme: dark) { .kop { background: #183a28; } }
-.logo { font-family: var(--font-kop); font-weight: 800; font-size: 1.6rem; color: #fff; text-decoration: none; letter-spacing: .5px; }
+.logo { display: flex; align-items: center; gap: 8px; font-family: var(--font-kop); font-weight: 800; font-size: 1.45rem; color: #fff; text-decoration: none; white-space: nowrap; }
+.logo img { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+.kop-rechts { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tandwiel { font-size: 1.4rem; text-decoration: none; padding: 4px; }
+@media (max-width: 400px) { .logo { font-size: 1.2rem; } .logo img { width: 34px; height: 34px; } .level-balk { width: 80px; } .level-icoon { font-size: 1.5rem; } }
 .level { display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; min-width: 0; }
 .level-icoon { font-size: 1.8rem; }
 .level-tekst { display: flex; flex-direction: column; min-width: 0; }
@@ -68,10 +72,12 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .onderbalk a { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: .75rem; font-weight: 700; color: var(--tekst-zacht); text-decoration: none; }
 .onderbalk a span { font-size: 1.4rem; line-height: 1.3; }
 .onderbalk a.actief { color: var(--groen); }
-.onderbalk .vang-knop span {
-  width: 58px; height: 58px; margin-top: -26px; border-radius: 50%; display: grid; place-items: center; font-size: 2rem; font-weight: 800;
-  background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(242, 165, 65, .55); border: 4px solid var(--bg-2);
+.onderbalk .spot-knop span {
+  width: 66px; height: 66px; margin-top: -30px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-kop); font-size: 1.15rem; font-weight: 800; letter-spacing: 1px; line-height: 1;
+  background: var(--accent); color: #2b1d05; box-shadow: 0 4px 12px rgba(242, 165, 65, .55); border: 4px solid var(--bg-2);
 }
+.onderbalk .spot-knop.actief span { background: #ffb85c; }
 
 /* ---------- Knoppen & chips ---------- */
 .knop {
@@ -137,6 +143,14 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .kaart-beeld img { width: 100%; aspect-ratio: 1.15; object-fit: contain; padding: 8px; }
 .kaart-groep { position: absolute; bottom: 8px; left: 8px; background: var(--bg-2); border-radius: 999px; padding: 2px 10px; font-size: .8rem; font-weight: 700; box-shadow: var(--schaduw); }
 .kaart-latijn { margin: 0 0 8px; text-align: center; color: var(--tekst-zacht); font-size: .9rem; }
+.kaart-kenmerken { margin: 0 0 8px; padding: 10px 12px; border-radius: 12px; background: var(--groen-licht); }
+.kaart-kenmerken ol { margin: 6px 0 0; padding: 0; list-style: none; counter-reset: k; display: grid; gap: 4px; }
+.kaart-kenmerken li { counter-increment: k; display: flex; gap: 8px; align-items: baseline; font-weight: 700; }
+.kaart-kenmerken li::before {
+  content: counter(k); flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center;
+  background: var(--groen); color: var(--bg-2); font-size: .8rem;
+}
+.kaart.compact .kaart-kenmerken { display: none; }
 .kaart-stats { margin: 0; display: grid; gap: 6px; }
 .kaart-stats > div { display: grid; grid-template-columns: 110px 1fr; gap: 8px; padding: 6px 10px; background: var(--bg); border-radius: 10px; }
 .kaart-stats dt { font-weight: 800; font-size: .8rem; color: var(--tekst-zacht); text-transform: uppercase; letter-spacing: .4px; padding-top: 2px; }
@@ -157,10 +171,13 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .blok { background: var(--bg-2); border-radius: var(--rond); padding: 14px 16px; margin: 16px auto; max-width: 600px; box-shadow: var(--schaduw); }
 .blok h3 { margin: 0 0 8px; font-size: 1.2rem; }
 .waarnemingen, .ebird-lijst { list-style: none; margin: 0; padding: 0; }
-.waarnemingen li { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--rand); }
+.waarnemingen li { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--rand); }
 .waarnemingen li:last-child, .ebird-lijst li:last-child { border: 0; }
 .waarnemingen span { color: var(--tekst-zacht); font-size: .9rem; }
-.waarnemingen em { display: block; font-size: .9rem; }
+.waarnemingen .w-tekst { display: flex; flex-direction: column; min-width: 0; }
+.notitie { margin: 4px 0 0; padding: 6px 10px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 14%, var(--bg-2)); font-size: .92rem; white-space: pre-line; }
+.link-knop { border: 0; background: none; padding: 2px 0; color: var(--groen); font-weight: 700; font-size: .85rem; text-align: left; }
+.vogel-kaart { height: 220px; border-radius: 14px; margin-bottom: 8px; z-index: 0; }
 .ebird-lijst li { display: flex; flex-direction: column; padding: 6px 0; border-bottom: 1px solid var(--rand); }
 .ebird-lijst span { font-size: .85rem; color: var(--tekst-zacht); }
 
@@ -180,7 +197,8 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .vinkje { flex: none !important; color: var(--groen); font-size: 1.4rem; font-weight: 800; }
 
 .formulier label { display: block; font-weight: 800; margin: 10px 0; }
-.formulier input {
+.formulier textarea { resize: vertical; }
+.formulier input, .formulier textarea {
   display: block; width: 100%; margin-top: 4px; padding: 10px 12px; font: inherit; font-weight: 400;
   border: 2px solid var(--rand); border-radius: 12px; background: var(--bg); color: var(--tekst);
 }
@@ -191,6 +209,9 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .vang-beeld { width: 160px; margin: 0 auto; }
 .vang h2 { margin: 4px 0 6px; }
 .vang .formulier { text-align: left; }
+.vang .formulier > label { margin-bottom: 0; }
+.vang .knop-gevaar { width: 100%; }
+.mini-kaart { height: 190px; border-radius: 12px; margin-top: 8px; border: 2px solid var(--rand); z-index: 0; }
 .vang .knop-groot { width: 100%; margin-top: 8px; }
 
 /* ---------- Lifelist ---------- */
@@ -257,3 +278,46 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .toast.weg { opacity: 0; transition: opacity .4s; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- Kaart (Leaflet) ---------- */
+.sticker-pin span {
+  display: block; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--pin); box-shadow: 0 3px 8px rgba(0,0,0,.3); overflow: hidden;
+}
+.sticker-pin img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
+.speld-pin span { font-size: 32px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+.leaflet-container { font-family: var(--font); }
+.popup p { margin: 6px 0; white-space: pre-line; }
+.popup a { display: block; margin-top: 4px; font-weight: 700; }
+.kaart-scherm { display: flex; flex-direction: column; gap: 10px; }
+.wereldkaart { height: calc(100vh - 330px); min-height: 300px; border-radius: var(--rond); box-shadow: var(--schaduw); z-index: 0; }
+.kaart-balk { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.schakel { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+.schakel input { width: 20px; height: 20px; accent-color: var(--groen); }
+.tijdlijn { list-style: none; margin: 0; padding: 4px 2px 8px; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; }
+.tijdlijn li { flex: none; scroll-snap-align: start; position: relative; }
+.tijdlijn li + li::before { content: ""; position: absolute; left: -10px; top: 38px; width: 10px; border-top: 3px dashed var(--accent); }
+.tijdlijn button {
+  width: 104px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px; border: 0;
+  border-top: 5px solid var(--zz); border-radius: 14px; background: var(--bg-2); box-shadow: var(--schaduw);
+}
+.tijdlijn img { width: 56px; height: 56px; object-fit: contain; }
+.tijdlijn strong { font-size: .85rem; line-height: 1.1; text-align: center; }
+.tijdlijn small { font-size: .72rem; color: var(--tekst-zacht); }
+
+/* ---------- Logboek ---------- */
+.tabs { display: flex; gap: 6px; background: var(--rand); padding: 4px; border-radius: 999px; margin-bottom: 14px; }
+.tabs button { flex: 1; border: 0; border-radius: 999px; padding: 8px; background: transparent; font-weight: 800; color: var(--tekst-zacht); }
+.tabs button.aan { background: var(--bg-2); color: var(--groen); box-shadow: var(--schaduw); }
+.dagboek { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 3px dashed var(--accent); display: grid; gap: 18px; }
+.dag { position: relative; }
+.dag::before { content: ""; position: absolute; left: -27px; top: 4px; width: 15px; height: 15px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); }
+.dag-kop { display: flex; flex-direction: column; margin-bottom: 8px; }
+.dag-kop strong { font-family: var(--font-kop); font-size: 1.2rem; }
+.dag-kop span { color: var(--tekst-zacht); font-size: .85rem; }
+.dag-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.dag-items li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px 8px 8px; background: var(--bg-2); border-radius: 14px; border-left: 6px solid var(--zz); box-shadow: var(--schaduw); }
+.dag-items img { width: 52px; height: 52px; object-fit: contain; }
+.item-tekst { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.item-tekst a { color: var(--tekst); text-decoration: none; }
+.item-tekst small { color: var(--tekst-zacht); }
+.nieuw { align-self: flex-start; background: var(--accent); color: #2b1d05; font-size: .7rem; font-weight: 800; border-radius: 999px; padding: 0 8px; margin: 2px 0; }

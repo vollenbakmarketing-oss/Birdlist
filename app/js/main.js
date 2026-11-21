@@ -3,19 +3,21 @@ import { APP } from "./config.js";
 import { opslag } from "./opslag.js";
 import { berekenStatus } from "./spel.js";
 import { esc } from "./ui.js";
-import { vogeldex } from "./schermen/vogeldex.js";
+import { vogelsScherm } from "./schermen/vogels.js";
 import { vogelScherm } from "./schermen/vogel.js";
-import { vangScherm } from "./schermen/vangen.js";
-import { lijstScherm } from "./schermen/lijst.js";
+import { spotScherm } from "./schermen/spotten.js";
+import { logboekScherm } from "./schermen/logboek.js";
+import { kaartScherm } from "./schermen/kaart.js";
 import { badgesScherm } from "./schermen/badges.js";
 import { meerScherm } from "./schermen/meer.js";
 
 // Routes: "#/pad" -> functie(root, ctx, ...parameters)
 const ROUTES = [
-  [/^#?\/?$/, vogeldex],
+  [/^#?\/?$/, vogelsScherm],
   [/^#\/vogel\/([\w-]+)$/, vogelScherm],
-  [/^#\/vangen$/, vangScherm],
-  [/^#\/lijst$/, lijstScherm],
+  [/^#\/spot$/, spotScherm],
+  [/^#\/kaart$/, kaartScherm],
+  [/^#\/logboek$/, logboekScherm],
   [/^#\/badges$/, badgesScherm],
   [/^#\/meer$/, meerScherm],
 ];
@@ -31,13 +33,17 @@ function ctx() {
 function tekenKop(c) {
   const { level, punten } = c.status;
   const naam = opslag.get().profiel.naam;
+  document.title = APP.naam;
   document.querySelector("#kop").innerHTML = `
-    <a href="#/" class="logo">${esc(APP.naam)}</a>
+    <a href="#/" class="logo"><img src="logo.png" alt="">${esc(APP.naam)}</a>
+    <span class="kop-rechts">
     <a href="#/badges" class="level" title="${level.volgend ? `Nog ${level.volgend.vanaf - punten} punten tot ${level.volgend.naam}` : "Hoogste level!"}">
       <span class="level-icoon">${level.icoon}</span>
       <span class="level-tekst"><strong>${esc(naam || level.naam)}</strong><small>${naam ? esc(level.naam) + " · " : ""}${punten} punten</small>
         <span class="level-balk"><span style="width:${Math.round(level.voortgang * 100)}%"></span></span></span>
-    </a>`;
+    </a>
+    <a href="#/meer" class="tandwiel" aria-label="Instellingen">⚙️</a>
+    </span>`;
 }
 
 function render() {

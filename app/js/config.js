@@ -5,14 +5,24 @@
 // =====================================================================
 
 export const APP = {
-  naam: "Vogeldex",
-  slogan: "Spot ze allemaal!",
+  naam: "Dodo Diary",
+  slogan: "Jouw vogellogboek",
   land: "BE",            // eBird-regiocode voor live waarnemingen
-  opslagSleutel: "vogeldex.v1",
+  opslagSleutel: "dododiary.v1",
+  oudeOpslagSleutels: ["vogeldex.v1"],   // gegevens van vroegere versies worden overgenomen
+};
+
+// Kaart (Leaflet + OpenStreetMap). Startpunt = midden van België.
+export const KAART = {
+  start: [50.64, 4.67],
+  startZoom: 7,
+  tegels: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  bron: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  routeKleur: "#f2a541",
 };
 
 // Zeldzaamheid: volgorde = van gewoon naar zeldzaam.
-// `punten` krijg je de eerste keer dat je de vogel vangt.
+// `punten` krijg je de eerste keer dat je de vogel spot.
 export const ZELDZAAMHEID = {
   "gewoon":        { label: "Gewoon",        sterren: 1, punten: 10,  kleur: "#6aa84f" },
   "vrij gewoon":   { label: "Vrij gewoon",   sterren: 2, punten: 20,  kleur: "#3d85c6" },
@@ -68,4 +78,5 @@ export const CREDITS = {
   },
   ebird: { tekst: "Waarnemingen: eBird (Cornell Lab of Ornithology)", url: "https://ebird.org" },
   geluid: { tekst: "Geluiden: xeno-canto.org", url: "https://xeno-canto.org" },
+  kaart: { tekst: "Kaart: OpenStreetMap en Leaflet", url: "https://www.openstreetmap.org/copyright" },
 };

@@ -1,10 +1,10 @@
 // Service worker: maakt de app offline bruikbaar (handig in het bos zonder bereik).
 // Verhoog VERSIE als je bestanden aanpast, zodat toestellen de nieuwe versie ophalen.
-const VERSIE = "vogeldex-v1";
+const VERSIE = "dododiary-v3";
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSIE).then(c => c.addAll([
-    "./", "index.html", "css/stijl.css", "data/vogels.json", "manifest.webmanifest", "icoon.svg",
+    "./", "index.html", "css/stijl.css", "data/vogels.json", "manifest.webmanifest", "logo.png", "favicon.png",
   ])));
   self.skipWaiting();
 });
