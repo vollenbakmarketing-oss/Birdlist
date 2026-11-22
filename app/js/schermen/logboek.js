@@ -25,7 +25,7 @@ export function logboekScherm(root, ctx) {
   `;
   const doel = root.querySelector("#tab-inhoud");
   if (!alle.length) {
-    doel.innerHTML = `<p class="leeg">Je logboek is nog leeg. Tik op <strong>SPOT</strong> als je een vogel ziet!</p>`;
+    doel.innerHTML = `<p class="leeg">Je logboek is nog leeg. Tik op de <strong>verrekijker</strong> als je een vogel ziet!</p>`;
   } else if (tab === "dagboek") {
     doel.innerHTML = dagboekHtml(ctx, alle);
   } else {

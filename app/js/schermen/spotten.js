@@ -34,7 +34,8 @@ export function spotScherm(root, ctx) {
       <li><button class="zoek-item" data-id="${v.id}" style="--zz:${zzKleur(v.zeldzaamheid)}">
         <img src="${esc(v.sticker)}" alt="" loading="lazy">
         <span><strong>${esc(v.naam)}</strong><small>${esc((v.kenmerken || []).slice(0, 2).join(" · "))}</small></span>
-        ${ctx.status.perVogel.has(v.id) ? `<span class="vinkje" title="Al gespot">✓</span>` : ""}
+        ${ctx.status.perVogel.has(v.id) ? `<span class="vinkje" title="Al gespot">✓</span>`
+          : ctx.opslag.opWishlist(v.id) ? `<span class="vinkje wens-ster" title="Op je wenslijst">⭐</span>` : ""}
       </button></li>`).join("") || `<li class="leeg">Geen vogel gevonden. Probeer een andere naam of filter.</li>`;
     lijst.querySelectorAll(".zoek-item").forEach(b => b.addEventListener("click", () =>
       openSpotDialoog(ctx, ctx.vogels.find(v => v.id === b.dataset.id))));
@@ -48,23 +49,33 @@ export function spotScherm(root, ctx) {
 // Nieuwe waarneming loggen.
 export function openSpotDialoog(ctx, vogel) {
   const al = ctx.status.perVogel.has(vogel.id);
+  const wens = ctx.opslag.opWishlist(vogel.id);
   openWaarnemingDialoog({
     vogel,
     titel: al ? `Weer een ${vogel.naam}!` : `${vogel.naam} gespot?`,
     knop: "✅ Dit was hem!",
+    // Nog niet gespot? Dan kan je hem ook op je wenslijst zetten.
+    extraKnop: al ? null : {
+      tekst: wens ? "⭐ Staat op je wenslijst" : "⭐ Wil ik zien",
+      aan: wens,
+      actie: () => {
+        ctx.opslag.wisselWishlist(vogel.id);
+        toast(wens ? `${vogel.naam} staat niet meer op je wenslijst.` : `⭐ ${vogel.naam} staat op je wenslijst! Hij gaat mee in Raad de vogel.`);
+      },
+    },
     opslaan: gegevens => {
       const voor = berekenStatus(ctx.vogels, ctx.opslag.get().waarnemingen, ctx.opslag.get().spel);
       ctx.opslag.voegWaarnemingToe({ vogelId: vogel.id, ...gegevens });
       const na = berekenStatus(ctx.vogels, ctx.opslag.get().waarnemingen, ctx.opslag.get().spel);
       const nieuweBadges = na.badges.filter(b => b.behaald && !voor.badges.find(x => x.id === b.id)?.behaald);
       if (al) toast(`+${PUNTEN_HERHAALDE_WAARNEMING} punten! ${nieuweBadges.length ? `Nieuwe badge: ${nieuweBadges[0].icoon} ${nieuweBadges[0].naam}` : "Staat in je logboek."}`);
-      else feest(vogel, voor, na);
+      else feest(vogel, voor, na, wens);
     },
   });
 }
 
 // --- Feestje bij een nieuwe soort -------------------------------------------
-function feest(vogel, voor, na) {
+function feest(vogel, voor, na, wasWens = false) {
   const zz = ZELDZAAMHEID[vogel.zeldzaamheid];
   const nieuweBadges = na.badges.filter(b => b.behaald && !voor.badges.find(x => x.id === b.id)?.behaald);
   const levelOp = na.level.nummer > voor.level.nummer;
@@ -72,7 +83,7 @@ function feest(vogel, voor, na) {
   const { el, sluit } = openModal(`
     <div class="feest" style="--zz:${zz.kleur}">
       <div class="confetti" aria-hidden="true">${"🎉✨🪶⭐".repeat(6).split("").map((c, i) => `<span style="--i:${i}">${c}</span>`).join("")}</div>
-      <p class="feest-titel">Nieuw in je lijst!</p>
+      <p class="feest-titel">${wasWens ? "Wens vervuld!" : "Nieuw in je lijst!"}</p>
       <div class="flip">${kaartHtml(vogel, { compact: true })}</div>
       <p class="feest-punten">+${zz.punten} punten</p>
       ${levelOp ? `<p class="feest-level">${na.level.icoon} Level omhoog! Je bent nu <strong>${na.level.naam}</strong></p>` : ""}

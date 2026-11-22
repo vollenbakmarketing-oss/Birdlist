@@ -19,8 +19,10 @@ function naarLokaal(iso) {
  * @param opslaan    functie({ datum, plaats, notitie, lat, lon, land, landNaam }) die het resultaat bewaart
  * @param titel/knop teksten bovenaan en op de bevestigknop
  * @param verwijder  optionele functie om de waarneming te verwijderen
+ * @param extraKnop  optionele tweede knop naast de bevestigknop: { tekst, actie, aan }
+ *                   (actie wordt uitgevoerd en het venster sluit, zonder waarneming op te slaan)
  */
-export function openWaarnemingDialoog({ vogel, bestaande = null, opslaan, titel, knop, verwijder }) {
+export function openWaarnemingDialoog({ vogel, bestaande = null, opslaan, titel, knop, verwijder, extraKnop = null }) {
   const metKaart = kaartBeschikbaar();
   let kaart = null;
   const { el, sluit } = openModal(`
@@ -42,7 +44,10 @@ export function openWaarnemingDialoog({ vogel, bestaande = null, opslaan, titel,
         <label for="w-notitie">Notitie</label>
         <textarea id="w-notitie" name="notitie" rows="3" maxlength="500" placeholder="Wat deed hij? Hoe was het weer? Met wie was je?">${esc(bestaande?.notitie)}</textarea>
 
-        <button class="knop knop-groot" type="submit">${esc(knop)}</button>
+        <div class="knoppen-rij">
+          <button class="knop knop-groot" type="submit">${esc(knop)}</button>
+          ${extraKnop ? `<button class="knop knop-wens ${extraKnop.aan ? "aan" : ""}" type="button" id="extra">${esc(extraKnop.tekst)}</button>` : ""}
+        </div>
         ${verwijder ? `<button class="knop knop-gevaar" type="button" id="wis">Verwijder deze waarneming</button>` : ""}
       </form>
     </div>`, { bijSluiten: () => kaart?.remove() });
@@ -108,6 +113,8 @@ export function openWaarnemingDialoog({ vogel, bestaande = null, opslaan, titel,
   };
   el.querySelector("#gps").addEventListener("click", zoekLocatie);
   if (!bestaande) zoekLocatie();
+
+  el.querySelector("#extra")?.addEventListener("click", () => { sluit(); extraKnop.actie(); });
 
   el.querySelector("#wis")?.addEventListener("click", () => {
     if (confirm("Deze waarneming verwijderen?")) { verwijder(); sluit(); }

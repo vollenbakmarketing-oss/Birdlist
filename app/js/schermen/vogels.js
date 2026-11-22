@@ -7,7 +7,7 @@ let filter = "alle"; // onthouden tussen schermwissels
 export function vogelsScherm(root, ctx) {
   const { vogels, status } = ctx;
   const wishlist = new Set(ctx.opslag.get().wishlist);
-  const chips = [["alle", "Alle"], ["gespot", "✓ Gespot"], ["nog", "Nog te spotten"], ["wishlist", `⭐ Wishlist (${wishlist.size})`],
+  const chips = [["alle", "Alle"], ["gespot", "✓ Gespot"], ["nog", "Nog te spotten"], ["wishlist", `⭐ Wil ik zien (${wishlist.size})`],
     ...Object.entries(GROEPEN).map(([k, g]) => [k, `${g.icoon} ${g.label}`])];
 
   const zicht = vogels.filter(v => {
@@ -21,7 +21,7 @@ export function vogelsScherm(root, ctx) {
 
   root.innerHTML = `
     <section class="dex-kop">
-      <div class="teller"><strong>${status.gespot.length}</strong> / ${vogels.length}<span>gespot</span></div>
+      <div class="teller"><strong>${status.gespot.length}</strong> / ${vogels.length}<span>gespot${wishlist.size ? ` · ⭐ ${wishlist.size} wensvogel${wishlist.size === 1 ? "" : "s"}` : ""}</span></div>
       <div class="balk"><div style="width:${(status.gespot.length / vogels.length) * 100}%"></div></div>
     </section>
     <nav class="chips" aria-label="Filter">
@@ -30,18 +30,19 @@ export function vogelsScherm(root, ctx) {
     <ul class="raster">
       ${zicht.map(v => {
         const heb = status.perVogel.has(v.id);
+        const wens = !heb && wishlist.has(v.id);   // wensvogel: wel zichtbaar, in een eigen kleur
         return `<li>
-          <a class="tegel ${heb ? "" : "verborgen"}" href="#/vogel/${v.id}" style="--zz:${zzKleur(v.zeldzaamheid)}">
+          <a class="tegel ${heb ? "" : wens ? "wens" : "verborgen"}" href="#/vogel/${v.id}" style="--zz:${zzKleur(v.zeldzaamheid)}">
             <span class="tegel-nr">${nr(v.nr)}</span>
-            ${wishlist.has(v.id) ? `<span class="tegel-wish" title="Op je wishlist">⭐</span>` : ""}
-            <img src="${esc(v.sticker)}" alt="${heb ? esc(v.naam) : "Nog niet gespot"}" loading="lazy">
-            <span class="tegel-naam">${heb ? esc(v.naam) : "???"}</span>
+            ${wens ? `<span class="tegel-wens">⭐ Wil ik zien</span>` : ""}
+            <img src="${esc(v.sticker)}" alt="${heb || wens ? esc(v.naam) : "Nog niet gespot"}" loading="lazy">
+            <span class="tegel-naam">${heb || wens ? esc(v.naam) : "???"}</span>
             <span class="tegel-sterren">${sterren(v.zeldzaamheid)}</span>
           </a></li>`;
       }).join("")}
     </ul>
     ${zicht.length === 0 ? `<p class="leeg">${filter === "wishlist"
-      ? "Je wishlist is nog leeg. Open een vogel en tik op ☆ Zet op mijn wishlist."
+      ? "Nog geen wensvogels. Tik op de verrekijker, kies een vogel en tik op ⭐ Wil ik zien."
       : "Nog niets hier. Ga naar buiten en spot je eerste vogel! 🔭"}</p>` : ""}
   `;
   root.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { filter = c.dataset.f; vogelsScherm(root, ctx); }));

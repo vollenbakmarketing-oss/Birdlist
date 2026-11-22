@@ -56,6 +56,7 @@ export const opslag = {
       lat: rond(lat), lon: rond(lon), land: land || null, landNaam: landNaam || null,
     };
     staat.waarnemingen.push(w);
+    staat.wishlist = staat.wishlist.filter(x => x !== vogelId); // wens vervuld!
     bewaar();
     return w;
   },
@@ -74,7 +75,8 @@ export const opslag = {
     staat.waarnemingen = staat.waarnemingen.filter(w => w.id !== id);
     bewaar();
   },
-  // Wishlist: vogels die je graag wil zien (gaan ook mee in het spel).
+  // Wenslijst ("Wil ik zien"): vogels die je graag wil zien. Ze gaan mee in Raad de vogel
+  // en verdwijnen vanzelf van de lijst zodra je ze echt spot.
   opWishlist: id => staat.wishlist.includes(id),
   wisselWishlist(id) {
     staat.wishlist = staat.wishlist.includes(id) ? staat.wishlist.filter(x => x !== id) : [...staat.wishlist, id];

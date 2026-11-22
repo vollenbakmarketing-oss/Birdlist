@@ -12,8 +12,8 @@ export function vogelScherm(root, ctx, id) {
   const lijst = ctx.status.perVogel.get(id) || [];
   const heb = lijst.length > 0;
   const metPlek = lijst.filter(w => w.lat != null);
-  let onthuld = heb;
   const opWish = ctx.opslag.opWishlist(id);
+  let onthuld = heb || opWish;   // wensvogels mag je al helemaal bekijken
 
   const teken = () => {
     root.innerHTML = `
@@ -24,7 +24,7 @@ export function vogelScherm(root, ctx, id) {
         <button class="knop knop-groot" id="spot">${heb ? "🔭 Ik zag hem nog eens!" : "🔭 Ik heb hem gespot!"}</button>
       </div>
       <div class="acties acties-klein">
-        <button class="knop knop-licht ${opWish ? "aan" : ""}" id="wish" aria-pressed="${opWish}">${opWish ? "⭐ Op mijn wishlist" : "☆ Zet op mijn wishlist"}</button>
+        ${heb ? "" : `<button class="knop knop-wens ${opWish ? "aan" : ""}" id="wish" aria-pressed="${opWish}">${opWish ? "⭐ Staat op je wenslijst" : "⭐ Wil ik zien"}</button>`}
         ${heb || opWish ? `<a class="knop knop-licht" href="#/spel">🎮 Oefen in Raad de vogel</a>` : ""}
       </div>
 
@@ -57,7 +57,7 @@ export function vogelScherm(root, ctx, id) {
     koppelGeluid(root);
     root.querySelector("#onthul")?.addEventListener("click", () => { onthuld = true; teken(); });
     root.querySelector("#spot").addEventListener("click", () => openSpotDialoog(ctx, v));
-    root.querySelector("#wish").addEventListener("click", () => ctx.opslag.wisselWishlist(v.id));
+    root.querySelector("#wish")?.addEventListener("click", () => ctx.opslag.wisselWishlist(v.id));
     root.querySelectorAll("[data-bewerk]").forEach(b => b.addEventListener("click", () =>
       bewerkWaarneming(ctx, lijst.find(w => w.id === b.dataset.bewerk))));
 

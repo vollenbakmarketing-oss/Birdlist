@@ -1,7 +1,7 @@
 # Dodo Diary 🦤
 
 Een vogellogboek voor kinderen van 8 tot 14 jaar. Op een leuke, laagdrempelige manier houd je
-je waarnemingen en je *lifelist* bij. Zie je een vogel? Tik op **SPOT**, zoek hem op en tik
+je waarnemingen en je *lifelist* bij. Zie je een vogel? Tik op de **verrekijker** (Spot), zoek hem op en tik
 **Dit was hem!** De app onthoudt de soort, de datum, de plaats en je notitie. Al je
 waarnemingen verschijnen op een **satellietkaart** die start als wereldbol, verbonden door je route,
 zoals in een reisverslag. Met het spel **Raad de vogel** leer je de vogels beter kennen.
@@ -30,7 +30,7 @@ werkt hij ook offline, bijvoorbeeld in het bos.
 ## Wat zit erin?
 
 - **Vogels**: alle soorten met een nummer. Vogels die je nog niet spotte, zie je als silhouet met `???`.
-- **SPOT**: zoek op naam, of filter op leefgebied en grootte als je de naam niet weet.
+- **Spot** (de verrekijker): zoek op naam, of filter op leefgebied en grootte als je de naam niet weet.
   De datum en de plaats (via gps) worden automatisch ingevuld. Op een kaartje duid je de
   plek aan of verbeter je ze, en je kan meteen een notitie schrijven.
 - **Kaart** (Mapbox, satelliet): de kaart start als draaiende wereldbol en vliegt dan naar je
@@ -38,9 +38,10 @@ werkt hij ook offline, bijvoorbeeld in het bos.
   in de volgorde waarin je ze zag. Onderaan staat een tijdlijn: tik erop om naar die plek te vliegen.
 - **Raad de vogel** (knop op de kaart): een spel zoals Birdle. Je ziet een vogel en typt de naam.
   Je hebt 3 kansen, en na elke foute poging wordt er een letter zichtbaar. In één keer juist levert
-  30 punten op, daarna 20, daarna 10. Je speelt met de vogels die je spotte en met je **wishlist**.
-- **Wishlist**: op de pagina van elke vogel tik je op ☆ om hem op je wishlist te zetten. In het
-  overzicht kan je filteren op ⭐ Wishlist.
+  30 punten op, daarna 20, daarna 10. Je speelt met de vogels die je spotte en met je **wensvogels**.
+- **Wil ik zien**: kies via de verrekijker een vogel en tik op **⭐ Wil ik zien** in plaats van *Dit was hem!*.
+  Hij staat dan als **wensvogel** in je overzicht, in het blauw, en gaat mee in Raad de vogel.
+  Spot je hem later echt, dan verdwijnt hij van je wenslijst: wens vervuld!
 - **Logboek**: een dagboek met al je waarnemingen per dag, met je notities. Tik op ✏️ om
   datum, plaats, plek op de kaart of notitie achteraf aan te passen. Er is ook een lifelist.
 - **Vogelkaartje** met een kleur en sterren per zeldzaamheid. Legendarische vogels krijgen een gouden rand.
