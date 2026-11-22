@@ -1,6 +1,6 @@
 // Service worker: maakt de app offline bruikbaar (handig in het bos zonder bereik).
 // Verhoog VERSIE als je bestanden aanpast, zodat toestellen de nieuwe versie ophalen.
-const VERSIE = "dododiary-v4";
+const VERSIE = "dododiary-v5";
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSIE).then(c => c.addAll([
