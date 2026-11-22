@@ -42,7 +42,7 @@ export function vogelsScherm(root, ctx) {
       }).join("")}
     </ul>
     ${zicht.length === 0 ? `<p class="leeg">${filter === "wishlist"
-      ? "Nog geen wensvogels. Tik op SPOT, kies een vogel en tik op ⭐ Wil ik zien."
+      ? "Nog geen wensvogels. Tik op de verrekijker, kies een vogel en tik op ⭐ Wil ik zien."
       : "Nog niets hier. Ga naar buiten en spot je eerste vogel! 🔭"}</p>` : ""}
   `;
   root.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { filter = c.dataset.f; vogelsScherm(root, ctx); }));
