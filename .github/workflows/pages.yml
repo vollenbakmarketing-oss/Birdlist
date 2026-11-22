@@ -1,9 +1,11 @@
 # Publiceert de map app/ op GitHub Pages.
 # Eenmalig: Settings → Pages → Source: "GitHub Actions".
+# De Mapbox-sleutel komt uit de repository variable MAPBOX_TOKEN
+# (Settings → Secrets and variables → Actions → Variables) en wordt bij het publiceren ingevuld.
 name: Publiceer op GitHub Pages
 on:
   push:
-    branches: [main]
+    branches: [Main, main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +22,22 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm test
+      - name: Mapbox-sleutel invullen
+        env:
+          MAPBOX_TOKEN: ${{ vars.MAPBOX_TOKEN }}
+        run: |
+          if [ -z "$MAPBOX_TOKEN" ]; then
+            echo "::warning::Geen MAPBOX_TOKEN ingesteld: de kaarten werken alleen met een sleutel in de app-instellingen."
+            exit 0
+          fi
+          node -e '
+            const fs = require("fs"), p = "app/js/config.js";
+            const oud = fs.readFileSync(p, "utf8");
+            const nieuw = oud.replace(/mapboxSleutel: "[^"]*"/, "mapboxSleutel: " + JSON.stringify(process.env.MAPBOX_TOKEN.trim()));
+            if (nieuw === oud) { console.error("mapboxSleutel niet gevonden in config.js"); process.exit(1); }
+            fs.writeFileSync(p, nieuw);
+            console.log("Mapbox-sleutel ingevuld.");
+          '
       - uses: actions/upload-pages-artifact@v3
         with: { path: app }
       - id: deploy
