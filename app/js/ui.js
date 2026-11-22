@@ -60,11 +60,11 @@ export function toast(tekst) {
 }
 
 // Modaal venster. Geeft een functie terug om het te sluiten.
-export function openModal(inhoudHtml, { klasse = "" } = {}) {
+export function openModal(inhoudHtml, { klasse = "", bijSluiten = null } = {}) {
   const m = document.createElement("div");
   m.className = "modal-achtergrond";
   m.innerHTML = `<div class="modal ${klasse}" role="dialog" aria-modal="true"><button class="modal-sluit" aria-label="Sluiten">✕</button>${inhoudHtml}</div>`;
-  const sluit = () => { m.classList.add("weg"); setTimeout(() => m.remove(), 200); document.removeEventListener("keydown", esc_); };
+  const sluit = () => { if (!m.isConnected || m.classList.contains("weg")) return; bijSluiten?.(); m.classList.add("weg"); setTimeout(() => m.remove(), 200); document.removeEventListener("keydown", esc_); };
   const esc_ = e => { if (e.key === "Escape") sluit(); };
   m.addEventListener("click", e => { if (e.target === m || e.target.closest(".modal-sluit")) sluit(); });
   document.addEventListener("keydown", esc_);

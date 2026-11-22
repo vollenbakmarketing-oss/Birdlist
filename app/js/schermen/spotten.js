@@ -53,10 +53,11 @@ export function openSpotDialoog(ctx, vogel) {
     titel: al ? `Weer een ${vogel.naam}!` : `${vogel.naam} gespot?`,
     knop: "✅ Dit was hem!",
     opslaan: gegevens => {
-      const voor = berekenStatus(ctx.vogels, ctx.opslag.get().waarnemingen);
+      const voor = berekenStatus(ctx.vogels, ctx.opslag.get().waarnemingen, ctx.opslag.get().spel);
       ctx.opslag.voegWaarnemingToe({ vogelId: vogel.id, ...gegevens });
-      const na = berekenStatus(ctx.vogels, ctx.opslag.get().waarnemingen);
-      if (al) toast(`+${PUNTEN_HERHAALDE_WAARNEMING} punten! Staat in je logboek.`);
+      const na = berekenStatus(ctx.vogels, ctx.opslag.get().waarnemingen, ctx.opslag.get().spel);
+      const nieuweBadges = na.badges.filter(b => b.behaald && !voor.badges.find(x => x.id === b.id)?.behaald);
+      if (al) toast(`+${PUNTEN_HERHAALDE_WAARNEMING} punten! ${nieuweBadges.length ? `Nieuwe badge: ${nieuweBadges[0].icoon} ${nieuweBadges[0].naam}` : "Staat in je logboek."}`);
       else feest(vogel, voor, na);
     },
   });

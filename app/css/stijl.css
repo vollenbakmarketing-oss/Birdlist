@@ -87,6 +87,9 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .knop-groot { padding: 14px 26px; font-size: 1.1rem; background: var(--accent); color: #2b1d05; box-shadow: 0 4px 0 #c47f22; }
 .knop-groot:active { transform: translateY(2px); box-shadow: 0 2px 0 #c47f22; }
 .knop-licht { background: var(--groen-licht); color: var(--groen); }
+.knop-licht.aan { background: var(--accent); color: #2b1d05; }
+.acties-klein { margin-top: -6px; }
+.acties-klein .knop { padding: 8px 14px; font-size: .92rem; }
 .knop-gevaar { background: transparent; color: var(--gevaar); border: 2px solid var(--gevaar); margin-top: 8px; }
 .knop-mini { border: 0; background: var(--groen-licht); border-radius: 10px; padding: 6px 10px; }
 .acties { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 16px 0; }
@@ -115,6 +118,7 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 }
 .tegel:hover, .tegel:focus-visible { transform: translateY(-3px); }
 .tegel img { width: 100%; aspect-ratio: 1; object-fit: contain; }
+.tegel-wish { position: absolute; top: 4px; right: 8px; font-size: .9rem; }
 .tegel-nr { position: absolute; top: 6px; left: 10px; font-size: .75rem; font-weight: 800; color: var(--tekst-zacht); }
 .tegel-naam { font-family: var(--font-kop); font-weight: 700; text-align: center; font-size: .95rem; hyphens: auto; overflow-wrap: anywhere; line-height: 1.1; margin-top: 4px; }
 .tegel-sterren { color: var(--zz); font-size: .8rem; letter-spacing: 1px; }
@@ -177,7 +181,7 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .waarnemingen .w-tekst { display: flex; flex-direction: column; min-width: 0; }
 .notitie { margin: 4px 0 0; padding: 6px 10px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 14%, var(--bg-2)); font-size: .92rem; white-space: pre-line; }
 .link-knop { border: 0; background: none; padding: 2px 0; color: var(--groen); font-weight: 700; font-size: .85rem; text-align: left; }
-.vogel-kaart { height: 220px; border-radius: 14px; margin-bottom: 8px; z-index: 0; }
+.vogel-kaart { height: 220px; border-radius: 14px; margin-bottom: 8px; overflow: hidden; background: #0b0b19; }
 .ebird-lijst li { display: flex; flex-direction: column; padding: 6px 0; border-bottom: 1px solid var(--rand); }
 .ebird-lijst span { font-size: .85rem; color: var(--tekst-zacht); }
 
@@ -211,7 +215,7 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .vang .formulier { text-align: left; }
 .vang .formulier > label { margin-bottom: 0; }
 .vang .knop-gevaar { width: 100%; }
-.mini-kaart { height: 190px; border-radius: 12px; margin-top: 8px; border: 2px solid var(--rand); z-index: 0; }
+.mini-kaart { height: 210px; border-radius: 12px; margin-top: 8px; border: 2px solid var(--rand); overflow: hidden; background: #0b0b19; }
 .vang .knop-groot { width: 100%; margin-top: 8px; }
 
 /* ---------- Lifelist ---------- */
@@ -279,17 +283,29 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
-/* ---------- Kaart (Leaflet) ---------- */
+/* ---------- Kaart (Mapbox) ---------- */
 .sticker-pin span {
   display: block; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--pin); box-shadow: 0 3px 8px rgba(0,0,0,.3); overflow: hidden;
 }
 .sticker-pin img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
 .speld-pin span { font-size: 32px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
-.leaflet-container { font-family: var(--font); }
+.mapboxgl-map { font-family: var(--font); }
+.mapboxgl-popup-content { border-radius: 14px; padding: 12px 14px; color: #1d2b22; box-shadow: var(--schaduw); }
+.mapboxgl-popup-close-button { font-size: 1.1rem; padding: 2px 8px; }
+.sticker-pin { cursor: pointer; }
 .popup p { margin: 6px 0; white-space: pre-line; }
 .popup a { display: block; margin-top: 4px; font-weight: 700; }
 .kaart-scherm { display: flex; flex-direction: column; gap: 10px; }
-.wereldkaart { height: calc(100vh - 330px); min-height: 300px; border-radius: var(--rond); box-shadow: var(--schaduw); z-index: 0; }
+.wereldkaart-houder { position: relative; }
+.wereldkaart { height: calc(100vh - 330px); min-height: 320px; border-radius: var(--rond); box-shadow: var(--schaduw); overflow: hidden; background: #0b0b19; }
+.spel-knop {
+  position: absolute; top: 12px; right: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px; border-radius: 999px; background: var(--accent); color: #2b1d05; font-weight: 800; text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+}
+.acties .spel-knop { position: static; }
+.geen-kaart ol { padding-left: 20px; display: grid; gap: 4px; }
+.geen-kaart code { background: var(--bg); padding: 0 4px; border-radius: 4px; }
 .kaart-balk { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .schakel { display: flex; align-items: center; gap: 6px; font-weight: 700; }
 .schakel input { width: 20px; height: 20px; accent-color: var(--groen); }
@@ -321,3 +337,55 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .item-tekst a { color: var(--tekst); text-decoration: none; }
 .item-tekst small { color: var(--tekst-zacht); }
 .nieuw { align-self: flex-start; background: var(--accent); color: #2b1d05; font-size: .7rem; font-weight: 800; border-radius: 999px; padding: 0 8px; margin: 2px 0; }
+
+/* ---------- Badges: groepen en landen ---------- */
+.subtitel { font-size: 1.3rem; margin: 22px 0 8px; }
+.subtitel small { font-size: .9rem; color: var(--tekst-zacht); }
+.blok.landen { margin: 0 0 10px; max-width: none; }
+.blok.landen p { margin: 0 0 6px; }
+.landen-lijst { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.landen-lijst li { background: var(--bg); border-radius: 999px; padding: 3px 10px; font-weight: 700; font-size: .9rem; }
+
+/* ---------- Spel: Raad de vogel ---------- */
+.raad-start { text-align: center; }
+.raad-logo { font-size: 3rem; margin: 0; }
+.raad-punten { list-style: none; padding: 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.raad-punten li { background: var(--bg); border-radius: 12px; padding: 6px 10px; font-size: .85rem; }
+.raad-punten strong { display: block; font-size: 1.3rem; color: var(--groen); font-family: var(--font-kop); }
+.groot { font-size: 1.3rem; }
+.midden { text-align: center; }
+.raad { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.raad-kop { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hartjes { letter-spacing: 2px; }
+.raad-beeld { background: radial-gradient(circle at 50% 50%, var(--groen-licht), transparent 70%); border-radius: var(--rond); }
+.raad-beeld img { width: 100%; max-width: 360px; margin: 0 auto; aspect-ratio: 1.15; object-fit: contain; }
+.raad-beeld.zweef img { animation: zweef 3s ease-in-out infinite; }
+@keyframes zweef { 50% { transform: translateY(-6px); } }
+.naam-vakjes { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.vak {
+  width: 30px; height: 38px; display: grid; place-items: center; border-radius: 8px; border: 2px solid var(--rand);
+  background: var(--bg-2); font-family: var(--font-kop); font-weight: 800; font-size: 1.2rem; color: var(--tekst);
+}
+.vak.open { border-color: var(--groen); background: var(--groen-licht); }
+.vak.hint { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 25%, var(--bg-2)); animation: pop .4s ease; }
+.vak.spatie { width: 12px; border: 0; background: none; }
+.vak.teken { border: 0; background: none; width: 14px; }
+.verloren .vak.open:not(.hint) { border-color: var(--gevaar); background: color-mix(in srgb, var(--gevaar) 12%, var(--bg-2)); }
+@media (max-width: 380px) { .vak { width: 24px; height: 32px; font-size: 1rem; } }
+.schud { animation: schud .35s ease; }
+@keyframes schud { 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-4px); } }
+.raad-form { display: flex; gap: 8px; }
+.raad-form input {
+  flex: 1; min-width: 0; padding: 12px 16px; font: inherit; font-size: 1.1rem; border-radius: 999px; border: 3px solid var(--groen);
+  background: var(--bg-2); color: var(--tekst);
+}
+.raad-form .knop-groot { padding: 12px 20px; }
+.raad-fout { text-align: center; color: var(--tekst-zacht); margin: 0; }
+.raad-uitslag { border-radius: var(--rond); padding: 14px; background: var(--bg-2); box-shadow: var(--schaduw); text-align: center; display: grid; gap: 8px; }
+.raad-uitslag p { margin: 0; }
+.raad-uitslag.goed { border: 3px solid var(--groen); }
+.raad-uitslag.slecht { border: 3px solid var(--gevaar); }
+.raad-uitslag .kaart-kenmerken { text-align: left; margin: 0; }
+.raad-overzicht { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.raad-overzicht a { display: flex; flex-direction: column; align-items: center; width: 84px; font-size: .8rem; font-weight: 700; text-decoration: none; color: var(--tekst); }
+.raad-overzicht img { width: 64px; height: 64px; object-fit: contain; }
