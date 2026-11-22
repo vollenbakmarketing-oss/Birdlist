@@ -3,7 +3,8 @@
 Een vogellogboek voor kinderen van 8 tot 14 jaar. Op een leuke, laagdrempelige manier houd je
 je waarnemingen en je *lifelist* bij. Zie je een vogel? Tik op **SPOT**, zoek hem op en tik
 **Dit was hem!** De app onthoudt de soort, de datum, de plaats en je notitie. Al je
-waarnemingen verschijnen op een **kaart**, verbonden door je route, zoals in een reisverslag.
+waarnemingen verschijnen op een **satellietkaart** die start als wereldbol, verbonden door je route,
+zoals in een reisverslag. Met het spel **Raad de vogel** leer je de vogels beter kennen.
 
 Elke soort heeft een digitaal **vogelkaartje** met de 3 belangrijkste kenmerken om hem te
 herkennen, plus groep, zeldzaamheid, grootte, spanwijdte, trekgedrag, een leuk weetje en het geluid.
@@ -32,15 +33,38 @@ werkt hij ook offline, bijvoorbeeld in het bos.
 - **SPOT**: zoek op naam, of filter op leefgebied en grootte als je de naam niet weet.
   De datum en de plaats (via gps) worden automatisch ingevuld. Op een kaartje duid je de
   plek aan of verbeter je ze, en je kan meteen een notitie schrijven.
-- **Kaart**: al je waarnemingen met de sticker van de vogel, verbonden door een stippellijn
+- **Kaart** (Mapbox, satelliet): de kaart start als draaiende wereldbol en vliegt dan naar je
+  waarnemingen. Elke waarneming staat erop met de sticker van de vogel, verbonden door een stippellijn
   in de volgorde waarin je ze zag. Onderaan staat een tijdlijn: tik erop om naar die plek te vliegen.
+- **Raad de vogel** (knop op de kaart): een spel zoals Birdle. Je ziet een vogel en typt de naam.
+  Je hebt 3 kansen, en na elke foute poging wordt er een letter zichtbaar. In één keer juist levert
+  30 punten op, daarna 20, daarna 10. Je speelt met de vogels die je spotte en met je **wishlist**.
+- **Wishlist**: op de pagina van elke vogel tik je op ☆ om hem op je wishlist te zetten. In het
+  overzicht kan je filteren op ⭐ Wishlist.
 - **Logboek**: een dagboek met al je waarnemingen per dag, met je notities. Tik op ✏️ om
   datum, plaats, plek op de kaart of notitie achteraf aan te passen. Er is ook een lifelist.
 - **Vogelkaartje** met een kleur en sterren per zeldzaamheid. Legendarische vogels krijgen een gouden rand.
 - **Punten en levels**: van 🥚 Eitje tot 🦅 Arendsoog. Zeldzamere vogels leveren meer punten op.
-- **16 badges**, zoals Roofvogelradar, Vroege vogel en Schattenjager.
+- **33 badges** in drie groepen:
+  - *Spotten*, zoals Roofvogelradar, Vroege vogel en Schattenjager.
+  - *Reizen*: 1, 2, 5, 10 en 25 landen, een badge per continent, 3 continenten en alle 7 continenten.
+    Het land wordt automatisch bepaald uit de plek die je aanduidt.
+  - *Raad de vogel*.
 - **Back-up**: de gegevens staan alleen op het toestel, dus je kan een back-up downloaden en terugzetten.
 - **eBird** (optioneel): met een API-sleutel zie je per vogel waar hij de laatste 30 dagen in de buurt gezien is.
+
+## De kaart instellen (Mapbox)
+
+De kaarten gebruiken Mapbox. Daarvoor is een gratis sleutel nodig; tot 50.000 keer een kaart
+laden per maand is gratis.
+
+1. Maak een account op <https://account.mapbox.com/auth/signup/>.
+2. Ga naar **Tokens** en maak een nieuwe token. Vul bij **URL restrictions** het adres van je app
+   in, bv. `https://vollenbakmarketing-oss.github.io/Birdlist/`. Zo kan niemand anders je sleutel gebruiken.
+3. Kopieer de token (begint met `pk.`) en zet hem in `app/js/config.js` bij `mapboxSleutel`.
+   Om snel te testen kan je hem ook in de app plakken bij ⚙️ Instellingen.
+
+Zonder sleutel werkt de app gewoon verder: alleen de kaarten worden niet getoond.
 
 ## Zelf aanpassen
 
@@ -49,7 +73,8 @@ Alles wat je vaak wil aanpassen, staat in een paar bestanden:
 | Wat wil je aanpassen?                                        | Bestand                    |
 |--------------------------------------------------------------|----------------------------|
 | Vogels: namen, kenmerken, weetjes, zeldzaamheid, maten, geluid | `app/data/vogels.json`   |
-| Appnaam, kaart, punten, kleuren, levels, groepen, trekgedrag | `app/js/config.js`         |
+| Appnaam, Mapbox-sleutel en kaartstijl, spelregels, punten, levels | `app/js/config.js`   |
+| Landen per continent                                         | `app/js/landen.js`         |
 | Badges (en hun voorwaarden)                                  | `app/js/badges.js`         |
 | Kleuren, lettertypes, look & feel                            | `app/css/stijl.css` (variabelen bovenaan) |
 | "Zo lang als een potlood"-vergelijkingen                     | `app/js/ui.js`             |
@@ -128,7 +153,9 @@ app/                    de website (statisch)
     opslag.js           lokale opslag (localStorage)
     spel.js             punten, levels, badges berekenen
     kaartje.js          het vogelkaartje
-    kaartlaag.js        hulpjes voor de kaarten (Leaflet)
+    kaartlaag.js        hulpjes voor de kaarten (Mapbox GL)
+    raden.js            spelregels van Raad de vogel
+    landen.js           landen → continenten, vlaggetjes
     waarneming-dialoog.js  venster om een waarneming toe te voegen of te bewerken
     locatie.js          gps + plaatsnaam (OpenStreetMap)
     ebird.js            eBird API
@@ -140,7 +167,7 @@ tests/                  npm test
 ```
 
 Er is geen framework en geen build-stap: gewone JavaScript-modules. De enige externe
-bibliotheek is [Leaflet](https://leafletjs.com) voor de kaarten (geladen via unpkg). Wil je later naar
+bibliotheek is [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) voor de kaarten. Wil je later naar
 accounts en cloudopslag? Dan vervang je alleen `app/js/opslag.js`.
 
 ## Privacy
@@ -166,7 +193,8 @@ accounts en cloudopslag? Dan vervang je alleen `app/js/opslag.js`.
   verkleind naar 480 px. De naamsvermelding staat op elk kaartje en in de app onder *Meer*.
 - **Soortdata** (Nederlandse namen, eBird-codes, IUCN): dezelfde dataset (MIT), gebaseerd op AviList v2026 en IOC.
 - **Waarnemingen**: [eBird](https://ebird.org), Cornell Lab of Ornithology.
-- **Kaarten**: [OpenStreetMap](https://www.openstreetmap.org/copyright) en [Leaflet](https://leafletjs.com).
+- **Kaarten**: [Mapbox](https://www.mapbox.com/about/maps/) (satellietbeelden). Plaatsnamen en
+  landen: [OpenStreetMap](https://www.openstreetmap.org/copyright) (Nominatim).
 - **Geluiden**: [xeno-canto](https://xeno-canto.org), Creative Commons volgens de opname.
 - **Weetjes, maten en trekgedrag**: zelf samengesteld voor deze POC. Laat ze nakijken door
   iemand van Natuurpunt of een vogelwerkgroep voor je ze publiceert.

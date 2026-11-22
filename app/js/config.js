@@ -12,13 +12,23 @@ export const APP = {
   oudeOpslagSleutels: ["vogeldex.v1"],   // gegevens van vroegere versies worden overgenomen
 };
 
-// Kaart (Leaflet + OpenStreetMap). Startpunt = midden van België.
+// Kaarten (Mapbox). Een gratis publieke sleutel ("pk.…") maak je op https://account.mapbox.com
+// Zet hem hieronder, of vul hem in bij Instellingen in de app (dat wint van deze waarde).
+// Beperk de sleutel in je Mapbox-account tot het adres van je app (bv. https://jouwnaam.github.io).
 export const KAART = {
-  start: [50.64, 4.67],
-  startZoom: 7,
-  tegels: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  bron: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  mapboxSleutel: "",
+  wereldStijl: "mapbox://styles/mapbox/satellite-v9",          // grote kaart: puur satelliet
+  kiesStijl: "mapbox://styles/mapbox/satellite-streets-v12",   // plek kiezen: satelliet met straatnamen
+  start: [50.64, 4.67],   // [breedte, lengte] = midden van België
+  startZoom: 6.5,
   routeKleur: "#f2a541",
+};
+
+// Spel "Raad de vogel"
+export const SPEL = {
+  vogelsPerSpel: 5,
+  pogingen: 3,
+  punten: [30, 20, 10],   // punten bij juist in poging 1, 2 of 3
 };
 
 // Zeldzaamheid: volgorde = van gewoon naar zeldzaam.
@@ -78,5 +88,6 @@ export const CREDITS = {
   },
   ebird: { tekst: "Waarnemingen: eBird (Cornell Lab of Ornithology)", url: "https://ebird.org" },
   geluid: { tekst: "Geluiden: xeno-canto.org", url: "https://xeno-canto.org" },
-  kaart: { tekst: "Kaart: OpenStreetMap en Leaflet", url: "https://www.openstreetmap.org/copyright" },
+  kaart: { tekst: "Kaarten: Mapbox, satellietbeelden van Maxar en anderen", url: "https://www.mapbox.com/about/maps/" },
+  plaatsnamen: { tekst: "Plaatsnamen: OpenStreetMap (Nominatim)", url: "https://www.openstreetmap.org/copyright" },
 };

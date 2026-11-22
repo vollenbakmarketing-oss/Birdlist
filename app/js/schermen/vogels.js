@@ -6,13 +6,15 @@ let filter = "alle"; // onthouden tussen schermwissels
 
 export function vogelsScherm(root, ctx) {
   const { vogels, status } = ctx;
-  const chips = [["alle", "Alle"], ["gespot", "✓ Gespot"], ["nog", "Nog te spotten"],
+  const wishlist = new Set(ctx.opslag.get().wishlist);
+  const chips = [["alle", "Alle"], ["gespot", "✓ Gespot"], ["nog", "Nog te spotten"], ["wishlist", `⭐ Wishlist (${wishlist.size})`],
     ...Object.entries(GROEPEN).map(([k, g]) => [k, `${g.icoon} ${g.label}`])];
 
   const zicht = vogels.filter(v => {
     const heb = status.perVogel.has(v.id);
     if (filter === "gespot") return heb;
     if (filter === "nog") return !heb;
+    if (filter === "wishlist") return wishlist.has(v.id);
     if (filter in GROEPEN) return v.groep === filter;
     return true;
   });
@@ -31,13 +33,16 @@ export function vogelsScherm(root, ctx) {
         return `<li>
           <a class="tegel ${heb ? "" : "verborgen"}" href="#/vogel/${v.id}" style="--zz:${zzKleur(v.zeldzaamheid)}">
             <span class="tegel-nr">${nr(v.nr)}</span>
+            ${wishlist.has(v.id) ? `<span class="tegel-wish" title="Op je wishlist">⭐</span>` : ""}
             <img src="${esc(v.sticker)}" alt="${heb ? esc(v.naam) : "Nog niet gespot"}" loading="lazy">
             <span class="tegel-naam">${heb ? esc(v.naam) : "???"}</span>
             <span class="tegel-sterren">${sterren(v.zeldzaamheid)}</span>
           </a></li>`;
       }).join("")}
     </ul>
-    ${zicht.length === 0 ? `<p class="leeg">Nog niets hier. Ga naar buiten en spot je eerste vogel! 🔭</p>` : ""}
+    ${zicht.length === 0 ? `<p class="leeg">${filter === "wishlist"
+      ? "Je wishlist is nog leeg. Open een vogel en tik op ☆ Zet op mijn wishlist."
+      : "Nog niets hier. Ga naar buiten en spot je eerste vogel! 🔭"}</p>` : ""}
   `;
   root.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { filter = c.dataset.f; vogelsScherm(root, ctx); }));
 }

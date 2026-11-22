@@ -10,6 +10,9 @@ import { logboekScherm } from "./schermen/logboek.js";
 import { kaartScherm } from "./schermen/kaart.js";
 import { badgesScherm } from "./schermen/badges.js";
 import { meerScherm } from "./schermen/meer.js";
+import { radenScherm } from "./schermen/raden.js";
+import { ruimSchermKaartenOp } from "./kaartlaag.js";
+import { plaatsInfo } from "./locatie.js";
 
 // Routes: "#/pad" -> functie(root, ctx, ...parameters)
 const ROUTES = [
@@ -20,6 +23,7 @@ const ROUTES = [
   [/^#\/logboek$/, logboekScherm],
   [/^#\/badges$/, badgesScherm],
   [/^#\/meer$/, meerScherm],
+  [/^#\/spel$/, radenScherm],
 ];
 
 const root = document.querySelector("#scherm");
@@ -27,7 +31,8 @@ let vogels = [];
 let vorigeHash = null;
 
 function ctx() {
-  return { vogels, opslag, status: berekenStatus(vogels, opslag.get().waarnemingen) };
+  const d = opslag.get();
+  return { vogels, opslag, status: berekenStatus(vogels, d.waarnemingen, d.spel) };
 }
 
 function tekenKop(c) {
@@ -50,6 +55,7 @@ function render() {
   const hash = location.hash || "#/";
   const c = ctx();
   tekenKop(c);
+  ruimSchermKaartenOp();
   for (const [re, scherm] of ROUTES) {
     const m = hash.match(re);
     if (m) {
@@ -75,7 +81,21 @@ async function start() {
   window.addEventListener("hashchange", render);
   opslag.bijWijziging(render);
   render();
+  vulLandenAan();
   if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+
+// Waarnemingen met een plek maar zonder land (bv. van een oudere versie, of zonder internet
+// opgeslagen) krijgen alsnog hun land, voor de reisbadges. Rustig na elkaar: max. 1 per seconde.
+async function vulLandenAan() {
+  const teDoen = opslag.get().waarnemingen.filter(w => w.lat != null && !w.land);
+  for (const w of teDoen) {
+    try {
+      const info = await plaatsInfo(w.lat, w.lon);
+      if (info.land) opslag.wijzigWaarneming(w.id, { land: info.land, landNaam: info.landNaam });
+    } catch { return; } // geen internet: volgende keer opnieuw
+    await new Promise(r => setTimeout(r, 1100));
+  }
 }
 
 start();

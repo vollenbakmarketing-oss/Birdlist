@@ -1,5 +1,5 @@
 // Instellingen, back-up en bronvermelding.
-import { CREDITS, ZELDZAAMHEID, APP } from "../config.js";
+import { CREDITS, ZELDZAAMHEID, APP, KAART } from "../config.js";
 import { esc, toast } from "../ui.js";
 
 export function meerScherm(root, ctx) {
@@ -32,6 +32,11 @@ export function meerScherm(root, ctx) {
 
     <section class="blok formulier">
       <h3>Voor ouders & leerkrachten</h3>
+      <label>Mapbox-sleutel voor de kaarten
+        <input id="mapbox" type="password" value="${esc(s.instellingen.mapboxSleutel)}" placeholder="pk.…" autocomplete="off">
+      </label>
+      <p class="klein">${KAART.mapboxSleutel ? "Er is al een sleutel ingesteld in de app. Vul hier alleen iets in om hem te vervangen." : "Gratis te maken op"}
+        <a href="https://account.mapbox.com" target="_blank" rel="noopener">account.mapbox.com</a> (de <em>Default public token</em>).</p>
       <label>eBird API-sleutel (optioneel)
         <input id="ebird" type="password" value="${esc(s.instellingen.ebirdSleutel)}" placeholder="Toont recente waarnemingen per vogel" autocomplete="off">
       </label>
@@ -47,6 +52,7 @@ export function meerScherm(root, ctx) {
   `;
 
   root.querySelector("#naam").addEventListener("change", e => { opslag.zetProfiel({ naam: e.target.value.trim() }); toast("Naam bewaard"); });
+  root.querySelector("#mapbox").addEventListener("change", e => { opslag.zetInstellingen({ mapboxSleutel: e.target.value.trim() }); toast("Mapbox-sleutel bewaard"); });
   root.querySelector("#ebird").addEventListener("change", e => { opslag.zetInstellingen({ ebirdSleutel: e.target.value.trim() }); toast("eBird-sleutel bewaard"); });
   root.querySelector("#export").addEventListener("click", () => {
     const blob = new Blob([opslag.exporteer()], { type: "application/json" });

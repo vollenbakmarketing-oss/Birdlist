@@ -4,7 +4,7 @@ import { esc, datumTekst, zzKleur } from "../ui.js";
 import { recenteWaarnemingen, soortPagina } from "../ebird.js";
 import { openSpotDialoog } from "./spotten.js";
 import { bewerkWaarneming } from "../waarneming-dialoog.js";
-import { kaartBeschikbaar, maakKaart, stickerIcoon } from "../kaartlaag.js";
+import { kaartBeschikbaar, maakKaart, stickerMarker, popup, grenzen } from "../kaartlaag.js";
 
 export function vogelScherm(root, ctx, id) {
   const v = ctx.vogels.find(x => x.id === id);
@@ -13,6 +13,7 @@ export function vogelScherm(root, ctx, id) {
   const heb = lijst.length > 0;
   const metPlek = lijst.filter(w => w.lat != null);
   let onthuld = heb;
+  const opWish = ctx.opslag.opWishlist(id);
 
   const teken = () => {
     root.innerHTML = `
@@ -21,6 +22,10 @@ export function vogelScherm(root, ctx, id) {
       <div class="acties">
         ${!onthuld ? `<button class="knop knop-licht" id="onthul">👀 Wie is het? (spieken)</button>` : ""}
         <button class="knop knop-groot" id="spot">${heb ? "🔭 Ik zag hem nog eens!" : "🔭 Ik heb hem gespot!"}</button>
+      </div>
+      <div class="acties acties-klein">
+        <button class="knop knop-licht ${opWish ? "aan" : ""}" id="wish" aria-pressed="${opWish}">${opWish ? "⭐ Op mijn wishlist" : "☆ Zet op mijn wishlist"}</button>
+        ${heb || opWish ? `<a class="knop knop-licht" href="#/spel">🎮 Oefen in Raad de vogel</a>` : ""}
       </div>
 
       ${heb ? `
@@ -52,19 +57,21 @@ export function vogelScherm(root, ctx, id) {
     koppelGeluid(root);
     root.querySelector("#onthul")?.addEventListener("click", () => { onthuld = true; teken(); });
     root.querySelector("#spot").addEventListener("click", () => openSpotDialoog(ctx, v));
+    root.querySelector("#wish").addEventListener("click", () => ctx.opslag.wisselWishlist(v.id));
     root.querySelectorAll("[data-bewerk]").forEach(b => b.addEventListener("click", () =>
       bewerkWaarneming(ctx, lijst.find(w => w.id === b.dataset.bewerk))));
 
     const kaartEl = root.querySelector("#vogel-kaart");
     if (kaartEl) {
-      const kaart = maakKaart(kaartEl, { scrollWheelZoom: false });
-      const punten = metPlek.map(w => {
-        window.L.marker([w.lat, w.lon], { icon: stickerIcoon(v, { kleur: zzKleur(v.zeldzaamheid), grootte: 38 }) })
-          .addTo(kaart).bindPopup(`<strong>${datumTekst(w.datum)}</strong><br>${esc(w.plaats || "")}`);
-        return [w.lat, w.lon];
-      });
-      if (punten.length === 1) kaart.setView(punten[0], 13);
-      else kaart.fitBounds(punten, { padding: [30, 30], maxZoom: 14 });
+      try {
+        const punten = metPlek.map(w => [w.lat, w.lon]);
+        const kaart = maakKaart(kaartEl, { center: punten[0], zoom: 12, scrollZoom: false });
+        metPlek.forEach(w => stickerMarker(v, { kleur: zzKleur(v.zeldzaamheid), grootte: 38 })
+          .setLngLat([w.lon, w.lat])
+          .setPopup(popup(`<strong>${datumTekst(w.datum)}</strong><br>${esc(w.plaats || "")}`))
+          .addTo(kaart));
+        if (punten.length > 1) kaart.once("load", () => kaart.fitBounds(grenzen(punten), { padding: 40, maxZoom: 14, duration: 0 }));
+      } catch { kaartEl.remove(); }
     }
 
     if (onthuld) laadEbird(root, ctx, v, lijst.at(-1));

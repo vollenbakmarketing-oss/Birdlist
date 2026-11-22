@@ -1,8 +1,8 @@
-// Kaart met al je waarnemingen, verbonden door een route in de volgorde waarin
-// je ze zag (zoals een reisverslag). Onderaan een tijdlijn: tik om ernaartoe te vliegen.
-import { KAART } from "../config.js";
+// Wereldkaart (satelliet) met al je waarnemingen, verbonden door een route in de volgorde
+// waarin je ze zag. Start als draaiende wereldbol en vliegt dan naar je plekken.
+// Onderaan een tijdlijn: tik om ernaartoe te vliegen. Rechtsboven: het spel "Raad de vogel".
 import { esc, datumTekst, zzKleur } from "../ui.js";
-import { kaartBeschikbaar, maakKaart, stickerIcoon } from "../kaartlaag.js";
+import { kaartBeschikbaar, maakKaart, stickerMarker, popup, tekenRoute, grenzen } from "../kaartlaag.js";
 
 let toonRoute = true;
 
@@ -12,15 +12,30 @@ export function kaartScherm(root, ctx) {
     .filter(w => w.lat != null && perVogel.has(w.vogelId))
     .sort((a, b) => a.datum.localeCompare(b.datum));
   const zonderPlek = ctx.opslag.get().waarnemingen.length - stappen.length;
+  const spelKnop = `<a class="spel-knop" href="#/spel">🎮 Raad de vogel</a>`;
 
   if (!kaartBeschikbaar()) {
-    root.innerHTML = `<p class="leeg">De kaart kon niet laden. Heb je internet?</p>`;
+    root.innerHTML = `
+      <div class="blok geen-kaart">
+        <h2>🌍 De kaart is nog niet ingesteld</h2>
+        <p>Voor de satellietkaart is een gratis Mapbox-sleutel nodig. Vraag een volwassene om hem in te stellen:</p>
+        <ol>
+          <li>Maak een gratis account op <a href="https://account.mapbox.com/auth/signup/" target="_blank" rel="noopener">mapbox.com</a>.</li>
+          <li>Kopieer je <strong>Default public token</strong> (begint met <code>pk.</code>).</li>
+          <li>Plak hem bij <a href="#/meer">Instellingen</a>.</li>
+        </ol>
+        ${typeof window.mapboxgl === "undefined" ? `<p class="klein">Of je hebt geen internet: de kaart heeft verbinding nodig.</p>` : ""}
+      </div>
+      <div class="acties">${spelKnop}</div>`;
     return;
   }
 
   root.innerHTML = `
     <div class="kaart-scherm">
-      <div class="wereldkaart" id="wereldkaart"></div>
+      <div class="wereldkaart-houder">
+        <div class="wereldkaart" id="wereldkaart"></div>
+        ${spelKnop}
+      </div>
       <div class="kaart-balk">
         <label class="schakel"><input type="checkbox" id="route" ${toonRoute ? "checked" : ""}> Toon mijn route</label>
         <span class="klein">${stappen.length} ${stappen.length === 1 ? "plek" : "plekken"}${zonderPlek ? ` · ${zonderPlek} zonder locatie` : ""}</span>
@@ -38,35 +53,43 @@ export function kaartScherm(root, ctx) {
       </ol>` : `<p class="leeg">Nog geen plekken op je kaart. Duid bij het spotten aan waar je de vogel zag, dan verschijnt hij hier! 🗺️</p>`}
     </div>`;
 
-  const kaart = maakKaart(root.querySelector("#wereldkaart"));
+  // Start als wereldbol boven je waarnemingen (of boven België).
+  const midden = stappen.length
+    ? [stappen.reduce((s, w) => s + w.lat, 0) / stappen.length, stappen.reduce((s, w) => s + w.lon, 0) / stappen.length]
+    : undefined;
+  const kaart = maakKaart(root.querySelector("#wereldkaart"), { center: midden, zoom: 1.2 });
+
   const markers = stappen.map(w => {
     const v = perVogel.get(w.vogelId);
-    return window.L.marker([w.lat, w.lon], { icon: stickerIcoon(v, { kleur: zzKleur(v.zeldzaamheid) }) })
-      .addTo(kaart)
-      .bindPopup(`
+    return stickerMarker(v, { kleur: zzKleur(v.zeldzaamheid) })
+      .setLngLat([w.lon, w.lat])
+      .setPopup(popup(`
         <div class="popup">
           <strong>${esc(v.naam)}</strong><br>
           <small>${datumTekst(w.datum, { tijd: true })}${w.plaats ? "<br>📍 " + esc(w.plaats) : ""}</small>
           ${w.notitie ? `<p>${esc(w.notitie)}</p>` : ""}
           <a href="#/vogel/${v.id}">Bekijk kaartje →</a>
-        </div>`);
+        </div>`))
+      .addTo(kaart);
   });
 
-  const lijn = window.L.polyline(stappen.map(w => [w.lat, w.lon]), {
-    color: KAART.routeKleur, weight: 3, dashArray: "6 8", opacity: 0.9,
-  });
-  if (toonRoute && stappen.length > 1) lijn.addTo(kaart);
+  const punten = stappen.map(w => [w.lat, w.lon]);
+  const zetRoute = punten.length > 1 ? tekenRoute(kaart, punten, toonRoute) : () => {};
 
-  if (stappen.length === 1) kaart.setView([stappen[0].lat, stappen[0].lon], 13);
-  else if (stappen.length > 1) kaart.fitBounds(stappen.map(w => [w.lat, w.lon]), { padding: [40, 40], maxZoom: 14 });
-
-  root.querySelector("#route").addEventListener("change", e => {
-    toonRoute = e.target.checked;
-    if (toonRoute && stappen.length > 1) lijn.addTo(kaart); else lijn.remove();
+  // Na het laden: van de wereldbol naar je plekken vliegen.
+  kaart.once("load", () => {
+    if (!punten.length) return;
+    setTimeout(() => {
+      if (punten.length === 1) kaart.flyTo({ center: [punten[0][1], punten[0][0]], zoom: 12, duration: 3500, essential: true });
+      else kaart.fitBounds(grenzen(punten), { padding: 60, maxZoom: 13, duration: 3500, essential: true });
+    }, 600);
   });
+
+  root.querySelector("#route").addEventListener("change", e => { toonRoute = e.target.checked; zetRoute(toonRoute); });
   root.querySelectorAll("[data-stap]").forEach(b => b.addEventListener("click", () => {
     const i = +b.dataset.stap;
-    kaart.flyTo([stappen[i].lat, stappen[i].lon], Math.max(kaart.getZoom(), 14), { duration: 0.8 });
-    markers[i].openPopup();
+    markers.forEach(m => m.getPopup()?.isOpen() && m.togglePopup());
+    kaart.flyTo({ center: [stappen[i].lon, stappen[i].lat], zoom: Math.max(kaart.getZoom(), 14), duration: 1500, essential: true });
+    kaart.once("moveend", () => { if (!markers[i].getPopup().isOpen()) markers[i].togglePopup(); });
   }));
 }
