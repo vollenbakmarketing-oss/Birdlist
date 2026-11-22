@@ -14,6 +14,8 @@
   --accent: #f2a541;
   --rand: #e3ddc8;
   --gevaar: #c0392b;
+  --wens: #2f7fb8;          /* wensvogels ("Wil ik zien") */
+  --wens-licht: #e2f0fa;
   --schaduw: 0 6px 18px rgba(31, 60, 40, .12);
   --rond: 18px;
   --font-kop: "Baloo 2", "Nunito", system-ui, sans-serif;
@@ -23,6 +25,7 @@
   :root {
     --bg: #14201a; --bg-2: #1c2b23; --tekst: #eef3ea; --tekst-zacht: #a9b8ad;
     --groen: #6fc391; --groen-licht: #24402f; --rand: #2c3d33; --schaduw: 0 6px 18px rgba(0,0,0,.35);
+    --wens: #6fb3e6; --wens-licht: #1d3346;
   }
 }
 
@@ -88,6 +91,11 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 .knop-groot:active { transform: translateY(2px); box-shadow: 0 2px 0 #c47f22; }
 .knop-licht { background: var(--groen-licht); color: var(--groen); }
 .knop-licht.aan { background: var(--accent); color: #2b1d05; }
+.knop-wens { background: var(--wens-licht); color: var(--wens); border: 2px solid var(--wens); }
+.knop-wens.aan { background: var(--wens); color: #fff; }
+.knoppen-rij { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.knoppen-rij .knop { flex: 1 1 140px; margin-top: 0 !important; }
+.wens-ster { font-size: 1.1rem; }
 .acties-klein { margin-top: -6px; }
 .acties-klein .knop { padding: 8px 14px; font-size: .92rem; }
 .knop-gevaar { background: transparent; color: var(--gevaar); border: 2px solid var(--gevaar); margin-top: 8px; }
@@ -118,7 +126,12 @@ h1, h2, h3 { font-family: var(--font-kop); line-height: 1.1; }
 }
 .tegel:hover, .tegel:focus-visible { transform: translateY(-3px); }
 .tegel img { width: 100%; aspect-ratio: 1; object-fit: contain; }
-.tegel-wish { position: absolute; top: 4px; right: 8px; font-size: .9rem; }
+.tegel.wens { border: 3px dashed var(--wens); background: var(--wens-licht); }
+.tegel.wens .tegel-naam { color: var(--wens); }
+.tegel-wens {
+  position: absolute; top: 4px; right: 6px; z-index: 1; background: var(--wens); color: #fff; border-radius: 999px;
+  padding: 0 7px; font-size: .65rem; font-weight: 800; white-space: nowrap;
+}
 .tegel-nr { position: absolute; top: 6px; left: 10px; font-size: .75rem; font-weight: 800; color: var(--tekst-zacht); }
 .tegel-naam { font-family: var(--font-kop); font-weight: 700; text-align: center; font-size: .95rem; hyphens: auto; overflow-wrap: anywhere; line-height: 1.1; margin-top: 4px; }
 .tegel-sterren { color: var(--zz); font-size: .8rem; letter-spacing: 1px; }

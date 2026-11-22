@@ -38,9 +38,10 @@ werkt hij ook offline, bijvoorbeeld in het bos.
   in de volgorde waarin je ze zag. Onderaan staat een tijdlijn: tik erop om naar die plek te vliegen.
 - **Raad de vogel** (knop op de kaart): een spel zoals Birdle. Je ziet een vogel en typt de naam.
   Je hebt 3 kansen, en na elke foute poging wordt er een letter zichtbaar. In één keer juist levert
-  30 punten op, daarna 20, daarna 10. Je speelt met de vogels die je spotte en met je **wishlist**.
-- **Wishlist**: op de pagina van elke vogel tik je op ☆ om hem op je wishlist te zetten. In het
-  overzicht kan je filteren op ⭐ Wishlist.
+  30 punten op, daarna 20, daarna 10. Je speelt met de vogels die je spotte en met je **wensvogels**.
+- **Wil ik zien**: kies bij SPOT een vogel en tik op **⭐ Wil ik zien** in plaats van *Dit was hem!*.
+  Hij staat dan als **wensvogel** in je overzicht, in het blauw, en gaat mee in Raad de vogel.
+  Spot je hem later echt, dan verdwijnt hij van je wenslijst: wens vervuld!
 - **Logboek**: een dagboek met al je waarnemingen per dag, met je notities. Tik op ✏️ om
   datum, plaats, plek op de kaart of notitie achteraf aan te passen. Er is ook een lifelist.
 - **Vogelkaartje** met een kleur en sterren per zeldzaamheid. Legendarische vogels krijgen een gouden rand.

@@ -1,4 +1,4 @@
-// Spel "Raad de vogel": oefen met vogels die je al spotte en met je wishlist.
+// Spel "Raad de vogel": oefen met vogels die je al spotte en met je wensvogels ("Wil ik zien").
 import { SPEL } from "../config.js";
 import { esc } from "../ui.js";
 import { beoordeel, puntenVoorPoging, volgendeLetter, kiesVogels } from "../raden.js";
@@ -30,10 +30,10 @@ function startScherm(root, ctx) {
       <ul class="raad-punten">
         ${SPEL.punten.map((p, i) => `<li><strong>${p}</strong> punten in poging ${i + 1}</li>`).join("")}
       </ul>
-      <p class="klein">Je oefent met de ${gespot} ${gespot === 1 ? "vogel" : "vogels"} die je spotte${wish ? ` en ${wish} van je wishlist ⭐` : ""}.</p>
+      <p class="klein">Je oefent met de ${gespot} ${gespot === 1 ? "vogel" : "vogels"} die je spotte${wish ? ` en ${wish} ${wish === 1 ? "wensvogel" : "wensvogels"} ⭐` : ""}.</p>
       ${p.length
         ? `<button class="knop knop-groot" id="start">Start</button>`
-        : `<p class="leeg">Nog geen vogels om mee te oefenen. Spot een vogel, of zet er een op je ⭐ wishlist via <a href="#/">Vogels</a>.</p>`}
+        : `<p class="leeg">Nog geen vogels om mee te oefenen. Tik op <a href="#/spot">SPOT</a>, kies een vogel en tik op <strong>Dit was hem!</strong> of <strong>⭐ Wil ik zien</strong>.</p>`}
       ${s.rondes ? `<p class="klein">Al ${s.rondes}× gespeeld · beste score ${s.beste} · ${s.geraden} vogels geraden</p>` : ""}
     </section>`;
   root.querySelector("#start")?.addEventListener("click", () => {
